@@ -5,7 +5,11 @@ const materialController = require("../controllers/materialController");
 router
   .route("/")
   .get(materialController.getAllMaterials)
-  .post(materialController.createOneMaterial);
+  .post(
+    materialController.uploadUserImages,
+    materialController.resizeUserImages,
+    materialController.createOneMaterial
+  );
 
 router
   .route("/:id")
