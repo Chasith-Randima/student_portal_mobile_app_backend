@@ -5,6 +5,8 @@ const authController = require("../controllers/authController");
 
 router.use("/file/:fileName", materialController.getMaterialFile);
 
+router.use("/createMaterial", materialController.createOneMaterial);
+
 router
   .route("/")
   .get(materialController.getAllMaterials)

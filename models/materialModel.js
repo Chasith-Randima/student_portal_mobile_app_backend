@@ -8,7 +8,9 @@ const materialSchema = new mongoose.Schema(
       type: String,
       required: [true, "User must have a title...Please add a title..."],
     },
-    material: [String],
+    material: {
+      type: String,
+    },
 
     module: [
       {
