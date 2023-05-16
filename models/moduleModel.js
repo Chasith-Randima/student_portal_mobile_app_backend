@@ -18,19 +18,35 @@ const moduleSchema = new mongoose.Schema(
       type: String,
     },
 
-    material: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Material",
-        // required: [true, "Appointment must belong to a hospital"],
-      },
-    ],
+    // material: [
+    //   {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: "Material",
+    //     // required: [true, "Appointment must belong to a hospital"],
+    //   },
+    // ],
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   }
 );
+
+// moduleSchema.pre(/^findOne/, function (next) {
+//   this.populate({
+//     path: "material",
+//     // select: "-__v -passwordChangedAt",
+//   });
+
+//   next();
+// });
+
+moduleSchema.virtual("materials", {
+  ref: "Material",
+  foreignField: "module",
+  localField: "_id",
+});
 
 const Module = mongoose.model("Module", moduleSchema);
 module.exports = Module;

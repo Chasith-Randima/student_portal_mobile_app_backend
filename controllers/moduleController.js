@@ -4,7 +4,7 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
 exports.createOneModule = factory.createOne(Module);
-exports.getOneModule = factory.getOne(Module);
+exports.getOneModule = factory.getOne(Module, [{ path: "materials" }]);
 // exports.getOneDoctor = factory.getOne(Doctor, [{ path: "appointments" }]);
 exports.getAllModules = factory.getAll(Module);
 exports.updateOneModule = factory.updateOne(Module);
