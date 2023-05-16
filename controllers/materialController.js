@@ -6,11 +6,33 @@ const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
 
+// const multerStorage = multer.memoryStorage();
+
+// const multerFilter = (req,file,cb) =>{
+
+// }
+
+// const storage1 = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "public/materials");
+//   },
+//   filename: (req, file, cb) => {
+//     const { originalname } = file;
+//     let fileExtention = originalname.split("/")[0];
+//     let fname = `material-${req.user._id}-${Date.now()}-${1}.${fileExtention}`;
+//     fname = fname.replace(/\s+/g, "-").toLowerCase();
+//     req.body.material = fname;
+//     // console.log(originalname.split("."));
+//     cb(null, fname);
+//   },
+// });
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/materials");
   },
   filename: (req, file, cb) => {
+    console.log(file);
+    console.log(req.body, "from multer .....................");
     const { originalname } = file;
     let fileExtention = originalname.split("/")[0];
     let fname = `material-${req.user._id}-${Date.now()}-${1}.${fileExtention}`;
@@ -21,7 +43,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
 // const multerStorage = multer.diskStorage({
 //   filename: (req, file, cb) => {
@@ -43,11 +65,11 @@ const upload = multer({ storage });
 //   }
 // };
 
-// const upload = multer({
-//   storage: multerStorage,
-//   //   dest:
-//   //   fileFilter: multerFilter,
-// });
+const upload = multer({
+  storage: storage,
+  //   dest:
+  //   fileFilter: multerFilter,
+});
 
 exports.uploadMaterialImages = upload.fields([
   { name: "material", maxCount: 5 },
