@@ -82,7 +82,7 @@ exports.logout = (req, res) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
-  console.log(req.headers.authorization);
+  // console.log(req.headers.authorization);
 
   if (
     req.headers.authorization &&
@@ -103,9 +103,11 @@ exports.protect = catchAsync(async (req, res, next) => {
     token,
     process.env.JWT_SECRET_USER
   );
-  console.log(decoded);
+  console.log(decoded, "decoded....");
 
   const currentUser = await User.findById(decoded.id);
+
+  console.log(currentUser);
 
   if (!currentUser) {
     return next(

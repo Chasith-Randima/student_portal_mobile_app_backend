@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const materialController = require("../controllers/materialController");
+const authController = require("../controllers/authController");
+
+router.use("/file/:fileName", materialController.getMaterialFile);
 
 router
   .route("/")
   .get(materialController.getAllMaterials)
   .post(
-    materialController.uploadUserImages,
-    materialController.resizeUserImages,
+    authController.protect,
+    materialController.uploadMaterialImages,
     materialController.createOneMaterial
   );
 

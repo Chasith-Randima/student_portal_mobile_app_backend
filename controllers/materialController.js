@@ -6,44 +6,108 @@ const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
 
-const multerStorage = multer.memoryStorage();
-
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new AppError("Not an Image Please upload only an image..", 400), false);
-  }
-};
-
-const upload = multer({
-  storage: multerStorage,
-  //   fileFilter: multerFilter,
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/materials");
+  },
+  filename: (req, file, cb) => {
+    const { originalname } = file;
+    let fileExtention = originalname.split("/")[0];
+    let fname = `material-${req.user._id}-${Date.now()}-${1}.${fileExtention}`;
+    fname = fname.replace(/\s+/g, "-").toLowerCase();
+    req.body.material = fname;
+    // console.log(originalname.split("."));
+    cb(null, fname);
+  },
 });
 
-exports.uploadUserImages = upload.fields([{ name: "images", maxCount: 5 }]);
+const upload = multer({ storage });
 
-exports.resizeUserImages = catchAsync(async (req, res, next) => {
-  console.log(!req.files.images);
-  if (!req.files.images) return next();
+// const multerStorage = multer.diskStorage({
+//   filename: (req, file, cb) => {
+//     let fileExt = req.files.material[0].mimetype.split("/")[1];
+//     const filename = `material-${req.user._id}-${Date.now()}-${1}.${fileExt}`;
+//     console.log(filename);
+//     cb(null, filename);
+//   },
+//   destination: (req, file, cb) => {
+//     cv(null, `public/materials/`);
+//   },
+// });
 
-  req.body.images = [];
+// const multerFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith("image")) {
+//     cb(null, true);
+//   } else {
+//     cb(new AppError("Not an Image Please upload only an image..", 400), false);
+//   }
+// };
 
-  await Promise.all(
-    req.files.images.map(async (file, i) => {
-      const filename = `patient-${req.patient._id}-${Date.now()}-${i + 1}.jpeg`;
+// const upload = multer({
+//   storage: multerStorage,
+//   //   dest:
+//   //   fileFilter: multerFilter,
+// });
 
-      await sharp(file.buffer)
-        .resize(2400, 1600)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/patients/${filename}`);
+exports.uploadMaterialImages = upload.fields([
+  { name: "material", maxCount: 5 },
+]);
 
-      req.body.images.push(filename);
-    })
-  );
+// exports.resizeUserImages = catchAsync(async (req, res, next) => {
+//   console.log(req.files.material[0].mimetype.split("/")[1]);
+//   let fileExt = req.files.material[0].mimetype.split("/")[1];
+//   //   console.log(req.files.mimetype.split("/")[1]);
+//   if (!req.files.material) return next();
 
-  next();
+//   req.body.material = [];
+
+//   await Promise.all(
+//     req.files.material.map(async (file, i) => {
+//       const filename = `material-${req.user._id}-${Date.now()}-${
+//         i + 1
+//       }.${fileExt}`;
+
+//       await multer.diskStorage({
+//         destination: `public/materials/`,
+//         filename: filename,
+//       });
+//       // .single(filename);
+//       //   await multer.diskStorage({ dest: `public/materials/` }).single(filename);
+
+//       //   await sharp(file.buffer)
+//       //     // .resize(2400, 1600)
+//       //     // .toFormat("jpeg")
+//       //     // .jpeg({ quality: 90 })
+//       //     .toFile(`public/materials/${filename}`);
+
+//       req.body.material.push(filename);
+//     })
+//   );
+
+//   next();
+// });
+
+exports.getMaterialFile = catchAsync(async (req, res) => {
+  let fileName = req.params.fileName;
+
+  let options = {
+    root: path.join(__dirname, "../public/materials"),
+    dotfiles: "deny",
+    headers: {
+      "x-timestamp": Date.now(),
+      "x-sent": true,
+    },
+  };
+
+  res.sendFile(fileName, options, function (err) {
+    if (err) {
+      res.status(500).json({
+        err,
+      });
+    } else {
+      console.log("Sent:", fileName);
+    }
+  });
 });
 
 exports.createOneMaterial = factory.createOne(Material);
