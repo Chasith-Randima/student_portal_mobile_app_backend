@@ -23,6 +23,9 @@ const lectureSchema = new mongoose.Schema(
     date: {
       type: Date,
     },
+    hall:{
+      type:String
+    },
 
     createdBy: [
       {

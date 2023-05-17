@@ -8,6 +8,9 @@ const resultSchema = new mongoose.Schema(
       type: String,
       required: [true, "User must have marks...Please add a mark..."],
     },
+    module: {
+      type: String,
+    },
     exam: [
       {
         type: mongoose.Schema.ObjectId,
@@ -35,6 +38,23 @@ const resultSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+resultSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "exam",
+    // select: "title",
+  });
+  this.populate({
+    path: "lecturer",
+    select: "username role",
+  });
+  this.populate({
+    path: "student",
+    select: "username role",
+  });
+
+  next();
+});
 
 const Result = mongoose.model("Result", resultSchema);
 module.exports = Result;
