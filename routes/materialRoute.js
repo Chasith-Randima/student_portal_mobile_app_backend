@@ -4,6 +4,7 @@ const materialController = require("../controllers/materialController");
 const authController = require("../controllers/authController");
 
 router.use("/file/:fileName", materialController.getMaterialFile);
+router.use("/downloadMaterial/:fileName", materialController.materialDownload);
 
 router.use("/createMaterial", materialController.createOneMaterial);
 

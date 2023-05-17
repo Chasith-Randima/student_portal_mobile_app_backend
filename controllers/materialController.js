@@ -31,16 +31,17 @@ const storage = multer.diskStorage({
     cb(null, "public/materials");
   },
   filename: (req, file, cb) => {
-    console.log(
-      file.destination,
-      file.fieldname,
-      file.mimetype,
-      file.originalname,
-      file.size,
-      file.buffer,
-      file.stream
-    );
+    // console.log(
+    //   file.destination,
+    //   file.fieldname,
+    //   file.mimetype,
+    //   file.originalname,
+    //   file.size,
+    //   file.buffer,
+    //   file.stream
+    // );
     console.log(req.body, "from multer .....................");
+    console.log(req.material, "from multer .....................");
     const { originalname } = file;
     let fileExtention = originalname.split("/")[0];
     let fname = `material-${req.user._id}-${Date.now()}-${1}.${fileExtention}`;
@@ -139,6 +140,27 @@ exports.getMaterialFile = catchAsync(async (req, res) => {
     }
   });
 });
+
+exports.materialDownload = (req, res) => {
+  // const filePath = __dirname + "../public/materials" + req.params.fileName;
+  const filePath = path.join(
+    __dirname,
+    `../public/materials/${req.params.fileName}`
+  );
+
+  res.download(
+    filePath,
+    req.params.fileName, // Remember to include file extension
+    (err) => {
+      if (err) {
+        res.send({
+          error: err,
+          msg: "Problem downloading the file",
+        });
+      }
+    }
+  );
+};
 
 exports.createOneMaterial = factory.createOne(Material);
 exports.getOneMaterial = factory.getOne(Material);

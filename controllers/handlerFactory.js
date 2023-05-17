@@ -5,6 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     console.log(req.body);
+    console.log(req.material, req.body);
     // console.log(req.headers);
     req.body.createdAt = req.requestTime;
 
