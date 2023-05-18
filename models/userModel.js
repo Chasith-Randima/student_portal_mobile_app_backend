@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
     badge: {
       type: String,
     },
+    images: [String],
     degree: {
       type: String,
     },

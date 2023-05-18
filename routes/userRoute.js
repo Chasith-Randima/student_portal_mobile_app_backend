@@ -25,8 +25,9 @@ router
   .route("/:id")
   .get(userController.getOneUser)
   .patch(
-    // userController.uploadUserImages,
-    // userController.resizeUserImages,
+    authController.protect,
+    userController.uploadUserImages,
+    userController.resizeUserImages,
     userController.updateOneUser
   )
   .delete(userController.deleteOneUser);
